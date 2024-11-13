@@ -1,0 +1,13 @@
+machine:
+  network:
+    hostname: ${hostname}
+    nameservers: ${dns}
+    interfaces:
+      - interface: eth0
+        addresses:
+          - "${ip}/${netmask}"
+        routes: ${routes}
+  time:
+    servers:
+      - time.cloudflare.com
+

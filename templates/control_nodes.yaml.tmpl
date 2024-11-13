@@ -1,0 +1,15 @@
+machine:
+  network:
+    hostname: ${hostname}
+    nameservers: ${dns}
+    interfaces:
+      - interface: eth0
+        addresses:
+          - "${ip}/${netmask}"
+        routes: ${routes}
+        vip:
+          ip: ${vip}
+  time:
+    servers:
+      - time.cloudflare.com
+
