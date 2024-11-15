@@ -1,9 +1,9 @@
 [Global]
 insecure-flag="true"
-cluster-id = "k8s-mng"
+cluster-id = "${vsphere_cluster_id}"
 
-[VirtualCenter "10.3.21.1"]
+[VirtualCenter "${virtual_center}"]
 user = "${vsphere_user}"
 password = "${vsphere_password}"
 port = "443"
-datacenters = "DC-LO"
+datacenters = "${vsphere_datacenter}"

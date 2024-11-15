@@ -1,28 +1,54 @@
+
+locals {
+  b64_vsphere_conf = base64encode(templatefile("${path.module}/templates/csi-vsphere.conf.tmpl", {
+    vsphere_user       = data.vault_generic_secret.talos.data["vsphere_user"],
+    vsphere_password   = data.vault_generic_secret.talos.data["vsphere_password"],
+    virtual_center     = data.vault_generic_secret.talos.data["virtual_center"],
+    vsphere_cluster_id = var.vm_vip_hostname,
+    vsphere_datacenter = var.vsphere_datacenter
+  }))
+}
+
 resource "kubernetes_namespace" "vmware-system-csi" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
   metadata {
     name = "vmware-system-csi"
     labels = {
       "pod-security.kubernetes.io/enforce" = "privileged"
     }
   }
-  depends_on = [data.talos_cluster_health.this]
 }
 
 resource "kubernetes_secret" "vsphere-config-secret" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
   wait_for_service_account_token = true
   metadata {
     name      = "vsphere-config-secret"
     namespace = kubernetes_namespace.vmware-system-csi.metadata[0].name
   }
   data = {
-    "csi-vsphere.conf" = "${templatefile("${path.module}/templates/csi-vsphere.conf.tmpl",
-      { vsphere_user     = data.vault_generic_secret.talos.data["vsphere_user"],
-        vsphere_password = data.vault_generic_secret.talos.data["vsphere_password"]
+    "csi-vsphere.conf" = "${templatefile("${path.module}/templates/csi-vsphere.conf.tmpl", {
+      vsphere_user       = data.vault_generic_secret.talos.data["vsphere_user"],
+      vsphere_password   = data.vault_generic_secret.talos.data["vsphere_password"],
+      virtual_center     = data.vault_generic_secret.talos.data["virtual_center"],
+      vsphere_cluster_id = var.vm_vip_hostname,
+      vsphere_datacenter = var.vsphere_datacenter
     })}"
   }
 }
 
 resource "kubernetes_service_account" "vsphere-csi-controller" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   automount_service_account_token = true
   metadata {
     name      = "vsphere-csi-controller"
@@ -137,6 +163,11 @@ resource "kubernetes_cluster_role" "vsphere-csi-cluster-role" {
 }
 
 resource "kubernetes_cluster_role_binding" "vsphere-csi-controller-binding" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name = "vsphere-csi-controller-binding"
   }
@@ -153,6 +184,11 @@ resource "kubernetes_cluster_role_binding" "vsphere-csi-controller-binding" {
 }
 
 resource "kubernetes_service_account" "vsphere-csi-node" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   automount_service_account_token = true
   metadata {
     name      = "vsphere-csi-node"
@@ -161,6 +197,11 @@ resource "kubernetes_service_account" "vsphere-csi-node" {
 }
 
 resource "kubernetes_cluster_role" "vsphere-csi-node-clister-role" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name = "vsphere-csi-node-cluster-role"
   }
@@ -177,6 +218,11 @@ resource "kubernetes_cluster_role" "vsphere-csi-node-clister-role" {
 }
 
 resource "kubernetes_cluster_role_binding" "vsphere-csi-node-cluster-role-binding" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name = "vsphere-csi-node-cluster-role-binding"
   }
@@ -193,6 +239,11 @@ resource "kubernetes_cluster_role_binding" "vsphere-csi-node-cluster-role-bindin
 }
 
 resource "kubernetes_role" "vsphere-csi-node-role" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name      = "vsphere-csi-node-role"
     namespace = kubernetes_namespace.vmware-system-csi.metadata[0].name
@@ -205,6 +256,11 @@ resource "kubernetes_role" "vsphere-csi-node-role" {
 }
 
 resource "kubernetes_role_binding" "vsphere-csi-node-binding" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name      = "vsphere-csi-node-binding"
     namespace = kubernetes_namespace.vmware-system-csi.metadata[0].name
@@ -222,6 +278,11 @@ resource "kubernetes_role_binding" "vsphere-csi-node-binding" {
 }
 
 resource "kubernetes_config_map" "internal-feature-states-csi-vsphere-vmware-com" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   metadata {
     name      = "internal-feature-states.csi.vsphere.vmware.com"
     namespace = kubernetes_namespace.vmware-system-csi.metadata[0].name
@@ -247,6 +308,11 @@ resource "kubernetes_config_map" "internal-feature-states-csi-vsphere-vmware-com
 }
 
 resource "kubernetes_service" "vsphere-csi-controller" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   wait_for_load_balancer = false
   metadata {
     name      = "vsphere-csi-controller"
@@ -273,6 +339,11 @@ resource "kubernetes_service" "vsphere-csi-controller" {
 }
 
 resource "kubernetes_deployment" "vsphere-csi-controller" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   wait_for_rollout = false
   metadata {
     name        = "vsphere-csi-controller"
@@ -587,6 +658,11 @@ resource "kubernetes_deployment" "vsphere-csi-controller" {
 }
 
 resource "kubernetes_daemonset" "vsphere-csi-node" {
+  depends_on = [
+    data.talos_cluster_health.this,
+    local_file.kubectl
+  ]
+
   wait_for_rollout = false
   metadata {
     name      = "vsphere-csi-node"
