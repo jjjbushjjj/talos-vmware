@@ -31,7 +31,7 @@ What is terraform is actually do:
 * Generates talosconfig
 * Generates kubeconfig
 * Install additional software into the cluster
-  - cilium SNI (This one runs at bootstrap stage)
+  - cilium CNI (This one runs at bootstrap stage)
   - vsphere CSI
 
 ### Configuration day 2
