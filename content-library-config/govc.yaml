@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: govc
+spec:
+  hostAliases:
+  - ip: "10.3.21.1"
+    hostnames:
+    - "vc-lo.lo.lenta.com"
+  containers:
+  - name: govc
+    image: registry.lenta.tech/infra/tools/govc:1.0.4

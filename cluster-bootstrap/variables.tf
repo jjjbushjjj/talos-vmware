@@ -5,6 +5,17 @@
 #   default     = ""
 # }
 
+# To overcome the provider limitation described here
+# https://github.com/hashicorp/terraform/issues/30937
+# we need to run apply in 2 stages
+# 1st is for initial provisioning terraform apply
+# 2nd is for additional configuration with terraform apply -var cluster_ready=true
+variable "cluster_ready" {
+  type        = bool
+  description = "Initial cluster state"
+  default     = false
+}
+
 # HashiCorp Vault
 variable "vault_addr" {
   type        = string
@@ -170,3 +181,4 @@ variable "cluster_endpoint" {
   type        = string
   default     = ""
 }
+

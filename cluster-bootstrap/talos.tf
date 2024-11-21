@@ -19,13 +19,6 @@ data "talos_machine_configuration" "controlplane" {
     file("${path.module}/patches/disable-external-service-registry.yaml"),
     file("${path.module}/patches/disable-cni.yaml"),
     file("${path.module}/patches/cilium-install-job.yaml"),
-    # templatefile("${path.module}/templates/vsphere-csi-driver.yaml.tmpl", {
-    #   vsphere_user       = data.vault_generic_secret.talos.data["vsphere_user"],
-    #   vsphere_password   = data.vault_generic_secret.talos.data["vsphere_password"],
-    #   virtual_center     = data.vault_generic_secret.talos.data["virtual_center"],
-    #   vsphere_cluster_id = var.vm_vip_hostname,
-    #   vsphere_datacenter = var.vsphere_datacenter
-    # })
   ]
 }
 
@@ -70,10 +63,9 @@ resource "talos_cluster_kubeconfig" "this" {
 data "talos_cluster_health" "this" {
   depends_on           = [data.talos_machine_configuration.controlplane, data.talos_machine_configuration.worker]
   client_configuration = talos_machine_secrets.this.client_configuration
-  # client_configuration = data.talos_client_configuration.this.client_configuration
-  control_plane_nodes = [for k, v in var.vm_controlplane_nodes : v.ipv4_address]
-  worker_nodes        = [for k, v in var.vm_worker_nodes : v.ipv4_address]
-  endpoints           = [for k, v in var.vm_controlplane_nodes : v.ipv4_address]
+  control_plane_nodes  = [for k, v in var.vm_controlplane_nodes : v.ipv4_address]
+  worker_nodes         = [for k, v in var.vm_worker_nodes : v.ipv4_address]
+  endpoints            = [for k, v in var.vm_controlplane_nodes : v.ipv4_address]
   timeouts = {
     read = "30m"
   }
@@ -81,10 +73,10 @@ data "talos_cluster_health" "this" {
 
 # Save talos and kubernetes configs to local files. Exlude them from git!!!
 resource "local_file" "kubectl" {
-  content         = resource.talos_cluster_kubeconfig.this.kubeconfig_raw
-  filename        = "kubeconfig"
-  file_permission = "0600"
   depends_on      = [data.talos_cluster_health.this]
+  content         = resource.talos_cluster_kubeconfig.this.kubeconfig_raw
+  filename        = "../${path.module}/cluster-configuration/kubeconfig"
+  file_permission = "0600"
 }
 
 resource "local_file" "talosctl" {
@@ -92,20 +84,3 @@ resource "local_file" "talosctl" {
   filename        = "talosconfig"
   file_permission = "0600"
 }
-
-# locals {
-#   b64_vsphere_conf = base64encode(templatefile("${path.module}/templates/csi-vsphere.conf.tmpl", {
-#     vsphere_user       = data.vault_generic_secret.talos.data["vsphere_user"],
-#     vsphere_password   = data.vault_generic_secret.talos.data["vsphere_password"],
-#     virtual_center     = data.vault_generic_secret.talos.data["virtual_center"],
-#     vsphere_cluster_id = var.vm_vip_hostname,
-#     vsphere_datacenter = var.vsphere_datacenter
-#   }))
-# }
-
-# resource "local_file" "test-vsphere-csi" {
-#   filename = "test-vsphere-csi.yaml"
-#   content = templatefile("${path.module}/templates/vsphere-csi-driver.yaml.tmpl", {
-#     secret_data = local.b64_vsphere_conf
-#   })
-# }

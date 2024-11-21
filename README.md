@@ -5,6 +5,12 @@ Main source for documentation: [talos](https://www.talos.dev)
 
 Vmware specific part: [talos vmware](https://www.talos.dev/v1.8/talos-guides/install/virtualized-platforms/vmware/)
 
+### Stages
+There are 2 terraform configurations here.
+
+* `cluster-bootstrap` Initial cluster provision. Modify and run this if you need to do something with virtual machines and talos itself.
+* `cluster-configure` Populate cluster with additional software. Here you could install whatever you want to see in kubernetes.
+
 ### Init terraform
 Before starting terraform init, make sure that env variables are set
 
@@ -20,7 +26,7 @@ Run `terraform init`
 
 Run `terraform plan` `terraform apply`
 
-### Configuration day 0-1
+### Cluster Bootstrap
 
 What is terraform is actually do:
 
@@ -29,12 +35,7 @@ What is terraform is actually do:
 * Generates talos configs for nodes
 * Bootstrap cluster
 * Generates talosconfig
-* Generates kubeconfig
-* Install additional software into the cluster
-  - cilium CNI (This one runs at bootstrap stage)
-  - vsphere CSI
-
-### Configuration day 2
+* Generates kubeconfig <- This is essential for Configuration stage. Providers there use it for access.
 
 * Scale UP Cluster
 
@@ -45,6 +46,14 @@ What is terraform is actually do:
   - `talosctl -n <IP.of.node.to.remove> reset`
   - `kubectl delete node <nodename>`
   - Remove block for node in `terraform.tfvars`
+
+### Cluster Configure
+
+* Install additional software into the cluster
+  - cilium CNI (This one runs at bootstrap stage)
+  - vsphere CSI
+  - nginx-ingress controller
+
 
 Run `terraform plan` `terraform apply`
 

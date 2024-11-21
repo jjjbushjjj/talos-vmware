@@ -77,6 +77,8 @@ cluster:
                    - cilium
                    - install
                    - --set
+                   - --version=1.15.6
+                   - --set
                    - ipam.mode=kubernetes
                    - --set
                    - kubeProxyReplacement=true
@@ -94,3 +96,8 @@ cluster:
                    - k8sServiceHost=localhost
                    - --set
                    - k8sServicePort=7445
+                   - --set
+                   - l2announcements.enabled=true
+                   - --set
+                   - externalIPs.enabled=true
+

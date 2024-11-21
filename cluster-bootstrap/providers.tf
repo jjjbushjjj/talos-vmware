@@ -24,10 +24,6 @@ terraform {
       source  = "pan-net/powerdns"
       version = "1.5.0"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.0.0"
-    }
     local = {
       source  = "hashicorp/local"
       version = ">= 2.5.2"
@@ -56,18 +52,8 @@ provider "powerdns" {
   insecure_https = true
 }
 
-provider "talos" {
-}
+provider "talos" {}
 
 # provider "kubernetes" {
 #   config_path = local_file.kubectl.filename
 # }
-
-provider "kubernetes" {
-  host                   = resource.talos_cluster_kubeconfig.this.kubernetes_client_configuration.host
-  client_key             = base64decode(resource.talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_key)
-  client_certificate     = base64decode(resource.talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_certificate)
-  cluster_ca_certificate = base64decode(resource.talos_cluster_kubeconfig.this.kubernetes_client_configuration.ca_certificate)
-}
-
-
