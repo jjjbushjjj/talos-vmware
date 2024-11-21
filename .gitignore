@@ -2,3 +2,4 @@ talosconfig
 kubeconfig
 .terraform*
 .env
+content-library-config

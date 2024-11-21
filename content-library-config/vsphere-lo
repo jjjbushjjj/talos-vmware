@@ -1,9 +1,0 @@
-export GOVC_DATACENTER=DC-LO
-export GOVC_USERNAME=devops_service@vsphere.local
-export GOVC_PASSWORD='VLH!eq3*z$2WEQF^'
-export GOVC_INSECURE=1
-#export GOVC_URL=https://10.3.21.1
-export GOVC_URL=https://vc.kube-prod.lenta.tech
-export GOVC_DATASTORE=DS_postgres
-export GOVC_NETWORK=vl302_DEV_10.3.[22-23]
-export GOVC_RESOURCE_POOL=CL-INFRA-HILO/Resources
