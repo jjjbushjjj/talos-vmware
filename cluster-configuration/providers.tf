@@ -20,6 +20,10 @@ terraform {
       source  = "hashicorp/vault"
       version = ">= 4.4.0"
     }
+    powerdns = {
+      source  = "pan-net/powerdns"
+      version = "1.5.0"
+    }
   }
 }
 
@@ -30,6 +34,12 @@ provider "vault" {
 provider "kubernetes" {
   # config_path = local_file.kubectl.filename
   config_path = "${path.module}/kubeconfig"
+}
+
+provider "powerdns" {
+  api_key        = data.vault_generic_secret.talos.data["powerdns_api_key"]
+  server_url     = var.powerdns_server_url
+  insecure_https = true
 }
 
 # provider "kubernetes" {

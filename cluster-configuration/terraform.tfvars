@@ -2,6 +2,7 @@
 # talos_bucket = "talos-mng"
 
 
+
 # HashiCorp Vault
 vault_addr = "https://vault.lenta.tech:8200"
 # vSphere connection
@@ -14,3 +15,7 @@ cilium_ip_pool = {
   start = "10.3.22.120"
   stop  = "10.3.22.130"
 }
+
+cluster_name        = "talos"
+dns_domain          = "lenta.tech"
+powerdns_server_url = "http://10.3.27.251:8081/"

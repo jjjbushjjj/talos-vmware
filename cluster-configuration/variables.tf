@@ -1,7 +1,13 @@
-variable "cluster_ready" {
-  type        = bool
-  description = "Initial cluster state"
-  default     = false
+variable "cluster_name" {
+  type        = string
+  description = "Cluster name used as prefix to name resources"
+  default     = ""
+}
+
+variable "dns_domain" {
+  type        = string
+  description = "Dns domain"
+  default     = "lenta.tech"
 }
 
 # HashiCorp Vault
@@ -40,4 +46,16 @@ variable "cilium_ip_pool" {
 variable "vm_vip_hostname" {
   description = "VIP hostname"
   type        = string
+}
+
+variable "powerdns_server_url" {
+  type        = string
+  description = "powerdns_server_url"
+  default     = ""
+}
+
+variable "dns_record_ttl" {
+  type        = number
+  description = "dns record ttl"
+  default     = 300
 }

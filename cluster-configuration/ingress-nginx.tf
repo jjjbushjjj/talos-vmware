@@ -409,7 +409,8 @@ resource "kubernetes_service" "ingress-nginx-controller-admission" {
 
 resource "kubernetes_deployment" "ingress-nginx-controller" {
   depends_on = [
-    kubernetes_service.ingress-nginx-controller
+    kubernetes_service.ingress-nginx-controller,
+    kubernetes_secret.nginx-ingress-tls
   ]
   lifecycle {
     ignore_changes = [
@@ -465,6 +466,7 @@ resource "kubernetes_deployment" "ingress-nginx-controller" {
             "--validating-webhook=:8443",
             "--validating-webhook-certificate=/usr/local/certificates/cert",
             "--validating-webhook-key=/usr/local/certificates/key",
+            "--default-ssl-certificate=ingress-nginx/nginx-ingress-tls"
           ]
           env {
             name = "POD_NAME"
@@ -778,5 +780,20 @@ resource "kubernetes_validating_webhook_configuration" "ingress-nginx-admission"
       resources    = ["ingresses"]
     }
     side_effects = "None"
+  }
+}
+
+resource "kubernetes_secret" "nginx-ingress-tls" {
+  depends_on = [
+    kubernetes_namespace.ingress-nginx
+  ]
+  metadata {
+    name      = "nginx-ingress-tls"
+    namespace = "ingress-nginx"
+  }
+  type = "kubernetes.io/tls"
+  data = {
+    "tls.key" = data.vault_generic_secret.lenta-tech-ssl-certs.data["key"]
+    "tls.crt" = data.vault_generic_secret.lenta-tech-ssl-certs.data["body"]
   }
 }
