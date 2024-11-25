@@ -24,6 +24,10 @@ terraform {
       source  = "pan-net/powerdns"
       version = "1.5.0"
     }
+    kustomization = {
+      source  = "kbst/kustomization"
+      version = ">=0.9.0"
+    }
   }
 }
 
@@ -40,6 +44,10 @@ provider "powerdns" {
   api_key        = data.vault_generic_secret.talos.data["powerdns_api_key"]
   server_url     = var.powerdns_server_url
   insecure_https = true
+}
+
+provider "kustomization" {
+  kubeconfig_path = "${path.module}/kubeconfig"
 }
 
 # provider "kubernetes" {
