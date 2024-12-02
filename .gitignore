@@ -4,3 +4,4 @@ kubeconfig
 .env
 content-library-config
 terraform.tfvars
+vmware-amd64.ova
