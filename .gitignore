@@ -3,3 +3,4 @@ kubeconfig
 .terraform*
 .env
 content-library-config
+terraform.tfvars

@@ -1,0 +1,92 @@
+# Backend configuration for s3
+# talos_bucket = "talos-mng"
+
+
+# HashiCorp Vault
+vault_addr = "Valut address"
+# PowerDNS
+powerdns_server_url = "PowerDNS adderss"
+# vSphere connection
+# If you can't connect to vcenter from your local machine try to swap addresses below
+vsphere_server     = "Vsphere vcenter address"
+resource_pool      = "talos-k8s"
+vsphere_datacenter = "Vsphere Datacenter"
+vsphere_datastore  = "Vsphere Datastore"
+vm_cluster         = "Vsphere Cluster"
+vm_cluster_folder  = "k8s/k8s-talos"
+vm_domain          = "Domain prefix used by dns resources"
+vm_network         = "Vsphere Network"
+vm_gateway         = "Default Gateway"
+vm_netmask         = "Net mask"
+vm_dns             = ["Dns server address list"]
+
+vm_template_name = "talos-v1.8.0" # Talos template name
+
+# Static routes for vms
+vm_routes = [{
+  network = ""
+  gateway = ""
+  },
+  {
+    network = ""
+    gateway = ""
+}]
+
+# HA VIP address for control plane both talos and kubernetes
+vm_vip           = ""
+vm_vip_hostname  = ""
+cluster_endpoint = ""
+
+
+vm_controlplane_nodes = {
+  "k8s-talos-mng-cp-01" = {
+    vm_name      = "k8s-talos-mng-cp-01"
+    hostname     = "k8s-talos-mng-cp-01"
+    ipv4_address = ""
+    num_cpus     = 2
+    memory       = 4096
+    disk_size    = 10
+  }
+  "k8s-talos-mng-cp-02" = {
+    vm_name      = "k8s-talos-mng-cp-02"
+    hostname     = "k8s-talos-mng-cp-02"
+    ipv4_address = ""
+    num_cpus     = 4
+    memory       = 4096
+    disk_size    = 10
+  }
+  "k8s-talos-mng-cp-03" = {
+    vm_name      = "k8s-talos-mng-cp-03"
+    hostname     = "k8s-talos-mng-cp-03"
+    ipv4_address = ""
+    num_cpus     = 4
+    memory       = 4096
+    disk_size    = 10
+  }
+}
+vm_worker_nodes = {
+  "k8s-talos-mng-wrk-01" = {
+    vm_name      = "k8s-talos-mng-wrk-01"
+    hostname     = "k8s-talos-mng-wrk-01"
+    ipv4_address = ""
+    num_cpus     = 4
+    memory       = 4096
+    disk_size    = 20
+  }
+  "k8s-talos-mng-wrk-02" = {
+    vm_name      = "k8s-talos-mng-wrk-02"
+    hostname     = "k8s-talos-mng-wrk-02"
+    ipv4_address = ""
+    num_cpus     = 4
+    memory       = 4096
+    disk_size    = 20
+  }
+  "k8s-talos-mng-wrk-03" = {
+    vm_name      = "k8s-talos-mng-wrk-03"
+    hostname     = "k8s-talos-mng-wrk-03"
+    ipv4_address = ""
+    num_cpus     = 4
+    memory       = 4096
+    disk_size    = 20
+  }
+}
